@@ -1,10 +1,17 @@
 import discord
+
 #tokenファイルからtokenを取得
 f = open('token', 'r')
 token = f.read()
 f.close()
 #クラアントオブジェクトを生成
 client = discord.Client()
+
+#サーバー参加時処理
+@client.event
+async def on_guild_join(guild):
+    print(f'I joined {guild.name} as {client.user}')
+    await guild.system_channel.send('Hi.')
 
 #起動時処理
 @client.event
