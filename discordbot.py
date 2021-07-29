@@ -7,6 +7,44 @@ f.close()
 #クラアントオブジェクトを生成
 client = discord.Client()
 
+class servers():
+    def __init__(self, client):
+        self.sync()
+
+    def sync(self):
+        self.servers = client.guilds
+
+    async def mkserver(self, message):
+        f = open('logo/sensei.png', 'rb')
+        im = f.read()
+        f.close()
+        guild = await client.create_guild("temporary server " + str(len(client.guilds)), icon=im)
+        invite = await (await guild.create_text_channel("default")).create_invite()
+        await message.channel.send(invite.url)
+        self.sync()
+
+    async def rmserver(self, message):
+        await message.guild.delete()
+        self.sync()
+
+    async def liserver(self, message):
+        await message.channel.send(self.servers)
+
+    async def getallinvite(self, message):
+        for i in client.guilds:
+            if i == message.guild:continue
+            invites = await i.invites()
+            if invites == None:
+                await message.channel.send(invites[0].url)
+            else:
+                if i.text_channels[0] == None:
+                    invite = await (await i.create_text_channel("default")).create_invite()
+                    await message.channel.send(invite.url)
+                else:
+                    invite = await i.text_channels[0].create_invite()
+                    await message.channel.send(invite.url)
+servers = servers(client)
+
 #サーバー参加時処理
 @client.event
 async def on_guild_join(guild):
@@ -17,8 +55,8 @@ async def on_guild_join(guild):
 @client.event
 async def on_ready():
     print(f'Logged on as {client.user}')
-    guilds = client.guilds
-    for i in guilds:
+    servers.sync()
+    for i in servers.servers:
         print(i)
         await i.system_channel.send('I\'m online')
 
@@ -37,31 +75,14 @@ async def on_message(message):
 
     # /mkserver でサーバー作成，招待発行
     if message.content == '/mkserver':
-        f = open('logo/sensei.png', 'rb')
-        im = f.read()
-        f.close()
-        guild = await client.create_guild("temporary server " + str(len(client.guilds)), icon=im)
-        invite = await (await guild.create_text_channel("default")).create_invite()
-        await message.channel.send(invite.url)
-
+        await servers.mkserver(message)
     # /rmserver でメッセージが発せられたサーバーを削除
     if message.content == '/rmserver':
-        await message.guild.delete()
-
+        await servers.rmserver(message)
     # /liserver で参加中サーバーの招待リンク
     if message.content == '/liserver':
-        guild = client.guilds
-        for i in guild:
-            if i == message.guild:continue
-            if i.invites() == None:
-                invites = i.invites()
-                await message.channel.send(invites[0].url)
-            else:
-                if i.text_channels[0] == None:
-                    invite = await (await i.create_text_channel("default")).create_invite()
-                    await message.channel.send(invite.url)
-                else:
-                    invite = await i.text_channels[0].create_invite()
-                    await message.channel.send(invite.url)
+        await servers.liserver(message)
+    if message.content == '/allseverinvite':
+        await servers.getallinvite(message)
 
 client.run(token)
