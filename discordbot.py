@@ -85,7 +85,7 @@ async def on_ready():
     servers.sync()
     for i in servers.servers:
         print(i)
-        await i.system_channel.send('I\'m online')
+        #await i.system_channel.send('I\'m online')
 
 #メッセージ受信時処理
 @client.event
