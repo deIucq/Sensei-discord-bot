@@ -53,6 +53,7 @@ class servers():
         elif reaction.emoji == '🗑️':
             for i in self.servers:
                 if i.name == reaction.message.content:
+                    await reaction.message.edit(content=i.name + '- deleted')
                     await i.delete()
                     self.sync()
 
@@ -112,10 +113,13 @@ async def on_message(message):
     if message.content == '/allseverinvite':
         await servers.getallinvite(message)
 
+#リアクション時処理
 @client.event
 async def on_reaction_add(reaction, user):
+    #reactionの主が自分自身だった場合は無視
     if user == client.user:
         return
+    #reactionされたmessageがservers.messageの中にあったら処理を行う
     if reaction.message in servers.message:
         await servers.reaction(reaction)
 
