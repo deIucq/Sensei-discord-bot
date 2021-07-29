@@ -28,7 +28,33 @@ class servers():
         self.sync()
 
     async def liserver(self, message):
-        await message.channel.send(self.servers)
+        self.message = []
+        for i in self.servers:
+            self.message.append(await message.channel.send(i.name))
+        for i in self.message:
+            await i.add_reaction('✅')
+            await i.add_reaction('🗑️')
+
+    async def reaction(self, reaction):
+        if reaction.emoji == '✅':
+            for i in self.servers:
+                if i.name == reaction.message.content:
+                    if i == reaction.message.guild:continue
+                    invites = await i.invites()
+                    if invites == None:
+                        await reaction.message.channel.send(invites[0].url)
+                    else:
+                        if i.text_channels[0] == None:
+                            invite = await (await i.create_text_channel("default")).create_invite()
+                            await reaction.message.channel.send(invite.url)
+                        else:
+                            invite = await i.text_channels[0].create_invite()
+                            await reaction.message.channel.send(invite.url)
+        elif reaction.emoji == '🗑️':
+            for i in self.servers:
+                if i.name == reaction.message.content:
+                    await i.delete()
+                    self.sync()
 
     async def getallinvite(self, message):
         for i in client.guilds:
@@ -79,10 +105,18 @@ async def on_message(message):
     # /rmserver でメッセージが発せられたサーバーを削除
     if message.content == '/rmserver':
         await servers.rmserver(message)
-    # /liserver で参加中サーバーの招待リンク
+    # /liserver で参加中サーバーの一覧
     if message.content == '/liserver':
         await servers.liserver(message)
+    # /allserverinvite で全参加中サーバーの招待リンク
     if message.content == '/allseverinvite':
         await servers.getallinvite(message)
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if user == client.user:
+        return
+    if reaction.message in servers.message:
+        await servers.reaction(reaction)
 
 client.run(token)
