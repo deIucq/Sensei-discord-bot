@@ -114,7 +114,7 @@ async def on_message(message):
     if message.content == '/allseverinvite':
         await servers.getallinvite(message)
     if message.content.startswith('/random'):
-        await message.channel.send(random.randint(0, int(message.content[8:])))
+        await message.channel.send(random.randint(1, int(message.content[8:])))
 
 #リアクション時処理
 @client.event
