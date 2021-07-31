@@ -1,4 +1,5 @@
 import discord
+import random
 
 #tokenファイルからtokenを取得
 f = open('token', 'r')
