@@ -54,8 +54,13 @@ class servers():
         elif reaction.emoji == '🗑️':
             for i in self.servers:
                 if i.name == reaction.message.content:
-                    await reaction.message.edit(content=i.name + '- deleted')
-                    await i.delete()
+                    try:
+                        await i.delete()
+                        await reaction.message.edit(content=i.name + '- deleted')
+                    except discord.HTTPException:
+                        reaction.message.channel.send(f'I could\'nt delete {i.name}. There\'s some errors.')
+                    except discord.Forbidden:
+                        reaction.message.channel.send(f'I could\'nt delete {i.name}. I don\'t have permission for this.')
                     self.sync()
 
     async def getallinvite(self, message):
