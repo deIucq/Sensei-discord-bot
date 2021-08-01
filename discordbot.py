@@ -77,8 +77,13 @@ servers = servers(client)
 @client.event
 async def on_guild_join(guild):
     print(f'I joined {guild.name} as {client.user}')
-    #await guild.system_channel.send('Hi.')
-
+    await guild.system_channel.send('Hi.')
+    servers.sync()
+#サーバー脱退時処理
+@client.event
+async def on_guild_remove(guild):
+    print(f'I leaved from {guild.name}')
+    servers.sync()
 #起動時処理
 @client.event
 async def on_ready():
