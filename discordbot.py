@@ -5,16 +5,13 @@ import random
 f = open('token', 'r')
 token = f.read()
 f.close()
-#クラアントオブジェクトを生成
-client = discord.Client()
 
+#serversクラスを定義
 class servers():
     def __init__(self, client):
         self.sync()
-
     def sync(self):
         self.servers = client.guilds
-
     async def mkserver(self, message):
         f = open('logo/sensei.png', 'rb')
         im = f.read()
@@ -23,11 +20,9 @@ class servers():
         invite = await (await guild.create_text_channel("default")).create_invite()
         await message.channel.send(invite.url)
         self.sync()
-
     async def rmserver(self, message):
         await message.guild.delete()
         self.sync()
-
     async def liserver(self, message):
         self.message = []
         for i in self.servers:
@@ -35,7 +30,6 @@ class servers():
         for i in self.message:
             await i.add_reaction('✅')
             await i.add_reaction('🗑️')
-
     async def reaction(self, reaction):
         if reaction.emoji == '✅':
             for i in self.servers:
@@ -58,11 +52,10 @@ class servers():
                         await i.delete()
                         await reaction.message.edit(content=i.name + '- deleted')
                     except discord.HTTPException:
-                        reaction.message.channel.send(f'I could\'nt delete {i.name}. There\'s some errors.')
+                        await reaction.message.channel.send(f'I could\'nt delete {i.name}. There\'s some errors.')
                     except discord.Forbidden:
-                        reaction.message.channel.send(f'I could\'nt delete {i.name}. I don\'t have permission for this.')
+                        await reaction.message.channel.send(f'I could\'nt delete {i.name}. I don\'t have permission for this.')
                     self.sync()
-
     async def getallinvite(self, message):
         for i in client.guilds:
             if i == message.guild:continue
@@ -76,6 +69,10 @@ class servers():
                 else:
                     invite = await i.text_channels[0].create_invite()
                     await message.channel.send(invite.url)
+
+#clientオブジェクトを生成
+client = discord.Client()
+#serversオブジェクトを生成
 servers = servers(client)
 
 #サーバー参加時処理
@@ -97,7 +94,6 @@ async def on_ready():
     for i in servers.servers:
         print(i)
         #await i.system_channel.send('I\'m online')
-
 #メッセージ受信時処理
 @client.event
 async def on_message(message):
@@ -125,7 +121,6 @@ async def on_message(message):
         await servers.getallinvite(message)
     if message.content.startswith('/random'):
         await message.channel.send(random.randint(1, int(message.content[8:])))
-
 #リアクション時処理
 @client.event
 async def on_reaction_add(reaction, user):
