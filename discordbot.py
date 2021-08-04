@@ -1,6 +1,8 @@
 import discord
 import random
 
+from discord import permissions
+
 #tokenファイルからtokenを取得
 f = open('token', 'r')
 token = f.read()
@@ -17,6 +19,8 @@ class servers():
         im = f.read()
         f.close()
         guild = await client.create_guild("temporary server " + str(len(client.guilds)), icon=im)
+        perm = discord.Permissions(administrator=True)
+        await guild.create_role(name='op',permissions=perm)
         invite = await (await guild.create_text_channel("default")).create_invite()
         await message.channel.send(invite.url)
         self.sync()
@@ -119,6 +123,18 @@ async def on_message(message):
     # /allserverinvite で全参加中サーバーの招待リンク
     if message.content == '/allseverinvite':
         await servers.getallinvite(message)
+    # /getop
+    if message.content == '/getop':
+        if message.guild.owner.id == client.user.id:
+            roles =message.guild.roles
+            for i in roles:
+                if i.name == 'op':
+                    print(roles)
+                    await message.author.add_roles(i)
+            await message.channel.send(f'gave {message.author.name} op!')
+        else:
+            await message.channel.send('This server\'s owner is not me.' )
+
     if message.content.startswith('/random'):
         await message.channel.send(random.randint(1, int(message.content[8:])))
 #リアクション時処理
@@ -132,3 +148,4 @@ async def on_reaction_add(reaction, user):
         await servers.reaction(reaction)
 
 client.run(token)
+
