@@ -137,18 +137,19 @@ async def on_message(message):
     # /random
     if message.content.startswith('/random'):
         await message.channel.send(random.randint(1, int(message.content[8:])))
-    # /dice
+    # /dice うごかん
     if message.content.startswith('/dice'):
-        i = message.content.find('D')
-        await message.channnel.send('find D')
+        i = message.content.rfind('D')
         try:
-            int(message.content[6:i-1])
-            int(message.content[i:])
-        except ValueError:
+            int(message.content[5:i])
+            int(message.content[i+1:])
+        except:
             await message.channel.send('error')
         else:
-            for j in range(int(message.content[0:i-1])):
-                await message.channel.send(random.randint(1, int(message.content[i:])))
+            for j in range(int(message.content[5:i])):
+                await message.channel.send(random.randint(1, int(message.content[i+1:])))
+    if message.content == '/hi':
+        await message.channel.send('hi')
 #リアクション時処理
 @client.event
 async def on_reaction_add(reaction, user):
