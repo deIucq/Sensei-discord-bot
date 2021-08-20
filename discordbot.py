@@ -134,9 +134,20 @@ async def on_message(message):
             await message.channel.send(f'gave {message.author.name} op!')
         else:
             await message.channel.send('This server\'s owner is not me.' )
-
+    # /random
     if message.content.startswith('/random'):
         await message.channel.send(random.randint(1, int(message.content[8:])))
+    # /dice
+    if message.content.startswith('/dice'):
+        msg = message.content[6:]
+        try:
+            int(msg[0:i-1])
+            int(message.content[i:])
+        except ValueError:
+            message.channnel.send('error')
+        else:
+            for j in range(int(msg[0:i-1])):
+                await message.channel.send(random.randint(1, int(message.content[i:])))
 #リアクション時処理
 @client.event
 async def on_reaction_add(reaction, user):
@@ -146,6 +157,5 @@ async def on_reaction_add(reaction, user):
     #reactionされたmessageがservers.messageの中にあったら処理を行う
     if reaction.message in servers.message:
         await servers.reaction(reaction)
-
 client.run(token)
 
