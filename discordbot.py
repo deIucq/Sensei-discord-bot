@@ -144,7 +144,7 @@ async def on_message(message):
             int(message.content[6:i-1])
             int(message.content[i:])
         except ValueError:
-            message.channnel.send('error')
+            message.channel.send('error')
         else:
             for j in range(int(message.content[0:i-1])):
                 await message.channel.send(random.randint(1, int(message.content[i:])))
