@@ -140,11 +140,12 @@ async def on_message(message):
     # /dice
     if message.content.startswith('/dice'):
         i = message.content.find('D')
+        await message.channnel.send('find D')
         try:
             int(message.content[6:i-1])
             int(message.content[i:])
         except ValueError:
-            message.channel.send('error')
+            await message.channel.send('error')
         else:
             for j in range(int(message.content[0:i-1])):
                 await message.channel.send(random.randint(1, int(message.content[i:])))
