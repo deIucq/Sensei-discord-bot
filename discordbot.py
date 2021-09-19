@@ -136,8 +136,15 @@ async def on_message(message):
             await message.channel.send('This server\'s owner is not me.' )
     # /random
     if message.content.startswith('/random'):
-        await message.channel.send(random.randint(1, int(message.content[8:])))
-    # /dice うごかん
+        if(message.content[8:] == 'member'):
+            if(message.author.voice == None):
+                await message.channel.send('error')
+            else:
+                mem = random.choice(message.author.voice.channel.members)
+                await message.channel.send(mem.name)
+        else:
+            await message.channel.send(random.randint(1, int(message.content[8:])))
+    # /dice
     if message.content.startswith('/dice'):
         i = message.content.rfind('D')
         try:
