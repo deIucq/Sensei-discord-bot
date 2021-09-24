@@ -3,6 +3,7 @@ import random
 import json
 import time
 import asyncio
+from discord import message
 import requests
 
 #serversクラスを定義
@@ -99,14 +100,13 @@ async def twitch_getchannelstatus(client):
             for i in data['data']:
                 if i['user_name'] not in online:
                     online.append(i['user_name'])
-                    print(i['user_name'] + "'s Stream Online" + "\n https://www.twitch.tv/" + i['user_login'])
-                    await client.get_channel(channelid).send(i['user_name'] + "'s Stream Online" + "\n https://www.twitch.tv/" + i['user_login'])
+                    msg = i['user_name']+'\'s Stream goes Online'+'\n'+i['title']+'('+i['game_name']+')'+'\n https://www.twitch.tv/' + i['user_login']
+                    await client.get_channel(channelid).send(msg)
                 else:
-                    online_.pop(i['user_name'])
+                    online_.remove(i['user_name'])
                 for j in online_:
                     online.pop(j)
                     await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
-
         await asyncio.sleep(interval)
 
 #サーバー参加時処理
