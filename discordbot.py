@@ -95,12 +95,18 @@ async def twitch_getchannelstatus(client):
     while True:
         data = json.loads(requests.get(url, params=payload, headers=headers).text)
         if data['data'] != None:
+            online_ = online
             for i in data['data']:
-                print(i)
-                if i['id'] not in online:
-                    online.append(i['id'])
+                if i['user_name'] not in online:
+                    online.append(i['user_name'])
                     print(i['user_name'] + "'s Stream Online" + "\n https://www.twitch.tv/" + i['user_login'])
-                    await client.get_channel(844959732476674058).send(i['user_name'] + "'s Stream Online" + "\n https://www.twitch.tv/" + i['user_login'])
+                    await client.get_channel(channelid).send(i['user_name'] + "'s Stream Online" + "\n https://www.twitch.tv/" + i['user_login'])
+                else:
+                    online_.pop(i['user_name'])
+                for j in online_:
+                    online.pop(j)
+                    await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
+
         await asyncio.sleep(interval)
 
 #サーバー参加時処理
