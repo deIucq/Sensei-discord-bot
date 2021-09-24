@@ -14,11 +14,9 @@ async def twitch_getchannelstatus(client):
         json_dict = json.load(f)
         interval = json_dict['TwitchAPIInterval']
         channelid = json_dict['StreamAnnouncementChannelID']
-
     url = 'https://api.twitch.tv/helix/streams'
     payload = {}
     headers = {}
-
     with open('settings.json') as f:
         json_dict = json.load(f)
         payload = {'user_login' : json_dict['streamer']}
@@ -27,18 +25,21 @@ async def twitch_getchannelstatus(client):
     online = []
     while True:
         data = json.loads(requests.get(url, params=payload, headers=headers).text)
-        if data['data'] != None:
-            online_ = online
-            for i in data['data']:
-                if i['user_name'] not in online:
-                    online.append(i['user_name'])
-                    msg = i['user_name']+'\'s Stream goes Online'+'\n'+i['title']+'('+i['game_name']+')'+'\n https://www.twitch.tv/' + i['user_login']
-                    await client.get_channel(channelid).send(msg)
-                else:
-                    online_.remove(i['user_name'])
-            for j in online_:
-                online.remove(j)
-                await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
+        offline = []
+        for i in online:
+            offline.append(i)
+        for i in data['data']:
+            if i['user_login'] not in online:
+                online.append(i['user_login'])
+                msg = '{}\'s stream goes online \n {}({}) \n https://www.twitch.tv/{}'.format(i['user_login'],i['title'],i['game_name'],i['user_login'])
+                print(msg)
+                await client.get_channel(channelid).send(msg)
+            else:
+                offline.remove(i['user_login'])
+        for j in offline:
+            online.remove(j)
+            print(j + "\'s Stream goes Offline")
+            await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
         await asyncio.sleep(interval)
 #serversクラスを定義
 class servers():
@@ -198,5 +199,4 @@ async def on_reaction_add(reaction, user):
 
 #tokenファイルからtokenを取得
 token = json.load(open('settings.json'))["discordToken"]
-
 client.run(token)
