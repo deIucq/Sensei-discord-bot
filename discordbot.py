@@ -105,7 +105,7 @@ async def twitch_getchannelstatus(client):
                 else:
                     online_.remove(i['user_name'])
                 for j in online_:
-                    online.pop(j)
+                    online.remove(j)
                     await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
         await asyncio.sleep(interval)
 
