@@ -2,13 +2,17 @@
 
 ## 概要
 
-このbotはdiscordサーバー「FPS Dojo」用に開発されたdiscord.pyを用いたいろいろできるdiscord botです．
+discordサーバー「FPS Dojo」用に開発されたdiscord.pyを用いたいろいろできるdiscord botです．
 
 ## 主な機能
-
-- ゲームサジェスト機能[未実装]
-- 参加ゲーム表示機能[未実装]
+### [実装済み]
 - 一時的なサーバーを建てる機能
+- Twitch配信通知機能
+- ランダム機能(VC参加者から一人指名，1から指定した数値までのランダムな値，TRPG等用ダイス)
+
+### [実装予定]
+- ゲームサジェスト機能
+- 参加ゲーム表示機能
 
 ## 実行方法
 
@@ -18,9 +22,18 @@
     python3 -m pip install -U discord.py
     sudo apt install libffi-dev libnacl-dev python3-dev
     ```
-2. discordbot.pyと同じディレクトリに`token`ファイルを生成
-3. Discord Developer Portalで取得，API Tokenを`token`ファイルに貼り付け
-4. `discordbot.py`を実行
+2. DiscordとTwitchのAPIToken等を入手したらsettings.jsonを生成し，以下の形式で設定
+    ```json
+    {
+    "discordToken":"XXX",
+    "TwitchClientId":"XXX",
+    "TwitchAuthorization": "Bearer XXX",
+    "TwitchAPIInterval" : XX,
+    "StreamAnnouncementChannelID" : XXX,
+    "streamer" : ["XXX", "YYY", "ZZZ"]
+    }
+    ```
+3. `discordbot.py`を実行
 
 ## コマンド
 
@@ -39,8 +52,10 @@
   - /allserverinvite
     
     botが参加中の全サーバーの招待を返します．
-2. misc
+2. random
   - /random
 
     引数に数字を入れた場合，1以上その数字以下ののランダムな数字を返します．
     memberと入れた場合，コマンドを送信した人が参加しているVCの参加者をランダムに選んで返します．
+  - /dice nDm
+    1以上m以下の値をn回返します
