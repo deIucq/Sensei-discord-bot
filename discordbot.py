@@ -1,9 +1,7 @@
 import discord
 import random
 import json
-import time
 import asyncio
-from discord import message
 import requests
 
 #twitch通知用関数
