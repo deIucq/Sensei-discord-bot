@@ -22,18 +22,28 @@ async def twitch_getchannelstatus(client):
     while True:
         data = json.loads(requests.get(url, params=payload, headers=headers).text)
         offline = []
+        onlineUser_login = []
+        for i in online:
+            onlineUser_login.append(i['user_login'])
+        #onlineをofflineにコピー
         for i in online:
             offline.append(i)
         for i in data['data']:
-            if i['user_login'] not in online:
-                online.append(i['user_login'])
-                msg = '{}\'s stream goes online \n {}({}) \n https://www.twitch.tv/{}'.format(i['user_login'],i['title'],i['game_name'],i['user_login'])
-                print(msg)
-                await client.get_channel(channelid).send(msg)
+            #取得したデータがonlineにない場合通知を送信し，onlineリストにuser_loginとmessageの辞書を追加
+            if i['user_login'] not in onlineUser_login:
+                msgContent = '{}\'s stream goes online \n {}({}) \n https://www.twitch.tv/{}'.format(i['user_login'],i['title'],i['game_name'],i['user_login'])
+                print(msgContent)
+                msg = await client.get_channel(channelid).send(content = msgContent)
+                online.append({'user_login':i['user_login'], 'msg':msg})
+            #取得したデータがofflineにある場合，offlineから取得したデータを削除
             else:
-                offline.remove(i['user_login'])
-        for j in offline:
-            online.remove(j)
-            print(j + "\'s Stream goes Offline")
-            await client.get_channel(channelid).send(j + "\'s Stream goes Offline")
+                for j in offline:
+                    if i['user_login'] == j['user_login']:
+                        offline.remove(j)
+        #残ったofflineについて，onlineからそのデータを削除し，messasgeの内容を書き換える．
+        for i in offline:
+            online.remove(i)
+            msgContent = str(i['user_login'] + "\'s stream goes offline")
+            print(msgContent)
+            await i['msg'].edit(content = msgContent)
         await asyncio.sleep(interval)
