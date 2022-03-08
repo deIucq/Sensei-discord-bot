@@ -12,28 +12,33 @@ discordサーバー「FPS Dojo」用に開発されたdiscord.pyを用いたい�
 
 ### [実装予定]
 - ゲームサジェスト機能
-- 参加ゲーム表示機能
 
 ## 実行方法
 
 1. Discord.pyをインストール
-
     ```
     python3 -m pip install -U discord.py
     sudo apt install libffi-dev libnacl-dev python3-dev
     ```
 2. DiscordとTwitchのAPIToken等を入手したらsettings.jsonを生成し，以下の形式で設定
+    (TwitchAuthorizationは次の手順で自動で埋めるので手動で取得する必要はありません)
     ```json
     {
-    "discordToken":"XXX",
-    "TwitchClientId":"XXX",
-    "TwitchAuthorization": "Bearer XXX",
-    "TwitchAPIInterval" : XX,
-    "StreamAnnouncementChannelID" : XXX,
-    "streamer" : ["XXX", "YYY", "ZZZ"]
+        "discordToken": "XXX",
+        "TwitchClientId": "XXX",
+        "TwitchClinetSecret": "XXX",
+        "TwitchAuthorization": "",
+        "TwitchAPIInterval": XX,
+        "StreamAnnouncementChannelID": XX,
+        "streamer": [
+            "XXX",
+            "YYY",
+            "ZZZ"
+        ]
     }
     ```
-3. `discordbot.py`を実行
+3. `refresh_api_token.py`を実行
+4. `discordbot.py`を実行
 
 ## コマンド
 
