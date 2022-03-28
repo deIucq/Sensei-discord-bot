@@ -14,13 +14,14 @@ discordサーバー「FPS Dojo」用に開発されたdiscord.pyを用いたい�
     {
     "discordToken":"XXX",
     "TwitchClientId":"XXX",
-    "TwitchAuthorization": "Bearer XXX",
+    "TwitchClinetSecret":"XXX"
     "TwitchAPIInterval" : XX,
     "StreamAnnouncementChannelID" : XXX,
     "streamer" : ["XXX", "YYY", "ZZZ"]
     }
     ```
-3. `discordbot.py`を実行
+3. `refresh_api_token.py`を実行
+4. `discordbot.py`を実行
 
 ## コマンド
 1. /twitch
@@ -34,18 +35,18 @@ discordサーバー「FPS Dojo」用に開発されたdiscord.pyを用いたい�
 3. /dice nDm \
     1以上m以下の値をn回返します
 4. misc
-  - /neko
-  "にゃーん"と返します。botの生存確認に使用してください
+    - /neko
+    "にゃーん"と返します。botの生存確認に使用してください
 
 削除済み
 1. temp server
-  - /mkserver
+    - /mkserver
     サーバー作成
-  - /rmserver
+    - /rmserver
     コマンド実行がされたサーバーを削除
-  - /liserver
+    - /liserver
     サーバー一覧
     ✅リアクションで該当サーバーの招待を表示
     🗑️リアクションで該当サーバーを削除
-  - /allserverinvite
+    - /allserverinvite
     botが参加中の全サーバーの招待を返します．
